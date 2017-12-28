@@ -425,6 +425,23 @@ class OAuth2 {
 	 * @ingroup oauth2_section_7
 	 */
 	public function verifyAccessToken($token_param, $scope = NULL) {
+		
+		// add katsudonik -->>
+		// check client
+		// Basic authorization header
+		$authHeaders = isset($authHeaders) ? $authHeaders : $this->getAuthorizationHeader();
+
+		// Input data by default can be either POST or GET
+		$inputData = ($_SERVER['REQUEST_METHOD'] == 'POST') ? $_POST : null;
+
+		// Authorize the client
+		$client = $this->getClientCredentials($inputData, $authHeaders);
+		if ($this->storage->checkClientCredentials($client[0], $client[1]) === FALSE) {
+		    throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_CLIENT, 'The client credentials are invalid');
+		}
+		// <<-- add katsudonik
+
+		
 		$tokenType = $this->getVariable(self::CONFIG_TOKEN_TYPE);
 		$realm = $this->getVariable(self::CONFIG_WWW_REALM);
 		
@@ -442,6 +459,13 @@ class OAuth2 {
 		if (!isset($token["expires"]) || !isset($token["client_id"])) {
 			throw new OAuth2AuthenticateException(self::HTTP_UNAUTHORIZED, $tokenType, $realm, self::ERROR_INVALID_GRANT, 'Malformed token (missing "expires" or "client_id")', $scope);
 		}
+		
+		// add katsudonik -->>
+		// Check token's client
+		if ($token["client_id"] != $client[0]) {
+		    throw new OAuth2AuthenticateException(self::HTTP_UNAUTHORIZED, $tokenType, $realm, self::ERROR_INVALID_GRANT, 'The access token provided is invalid.")', $scope);
+		}
+		// <<-- add katsudonik
 		
 		// Check token expiration (expires is a mandatory paramter)
 		if (isset($token["expires"]) && time() > $token["expires"]) {
