@@ -427,7 +427,7 @@ class OAuth2 {
 	public function verifyAccessToken($token_param, $scope = NULL) {
 		
 		// add katsudonik -->>
-		// check client (for token replace attack, if check client by auth server)
+		// check client (for token replace attack, if check client by auth server. normal: use debug_token api by client and check client by client)
 		// Basic authorization header
 // 		$authHeaders = isset($authHeaders) ? $authHeaders : $this->getAuthorizationHeader();
 
@@ -461,7 +461,7 @@ class OAuth2 {
 		}
 		
 		// add katsudonik -->>
-// 		// Check token's client (for token replace attack, if check client by auth server)
+// 		// Check token's client (for token replace attack, if check client by auth server. normal: use debug_token api by client and check client by client)
 // 		if ($token["client_id"] != $client[0]) {
 // 		    throw new OAuth2AuthenticateException(self::HTTP_UNAUTHORIZED, $tokenType, $realm, self::ERROR_INVALID_GRANT, 'The access token provided is invalid.")', $scope);
 // 		}
