@@ -427,18 +427,18 @@ class OAuth2 {
 	public function verifyAccessToken($token_param, $scope = NULL) {
 		
 		// add katsudonik -->>
-		// check client
+		// check client (for token replace attack, if check client by auth server)
 		// Basic authorization header
-		$authHeaders = isset($authHeaders) ? $authHeaders : $this->getAuthorizationHeader();
+// 		$authHeaders = isset($authHeaders) ? $authHeaders : $this->getAuthorizationHeader();
 
-		// Input data by default can be either POST or GET
-		$inputData = ($_SERVER['REQUEST_METHOD'] == 'POST') ? $_POST : null;
+// 		// Input data by default can be either POST or GET
+// 		$inputData = ($_SERVER['REQUEST_METHOD'] == 'POST') ? $_POST : null;
 
-		// Authorize the client
-		$client = $this->getClientCredentials($inputData, $authHeaders);
-		if ($this->storage->checkClientCredentials($client[0], $client[1]) === FALSE) {
-		    throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_CLIENT, 'The client credentials are invalid');
-		}
+// 		// Authorize the client
+// 		$client = $this->getClientCredentials($inputData, $authHeaders);
+// 		if ($this->storage->checkClientCredentials($client[0], $client[1]) === FALSE) {
+// 		    throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_CLIENT, 'The client credentials are invalid');
+// 		}
 		// <<-- add katsudonik
 
 		
@@ -461,10 +461,10 @@ class OAuth2 {
 		}
 		
 		// add katsudonik -->>
-		// Check token's client
-		if ($token["client_id"] != $client[0]) {
-		    throw new OAuth2AuthenticateException(self::HTTP_UNAUTHORIZED, $tokenType, $realm, self::ERROR_INVALID_GRANT, 'The access token provided is invalid.")', $scope);
-		}
+// 		// Check token's client (for token replace attack, if check client by auth server)
+// 		if ($token["client_id"] != $client[0]) {
+// 		    throw new OAuth2AuthenticateException(self::HTTP_UNAUTHORIZED, $tokenType, $realm, self::ERROR_INVALID_GRANT, 'The access token provided is invalid.")', $scope);
+// 		}
 		// <<-- add katsudonik
 		
 		// Check token expiration (expires is a mandatory paramter)
